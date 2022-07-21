@@ -1,43 +1,12 @@
-resource "aws_s3_bucket" "s3_bucket" {
-  bucket = "aws-s3-bk-tariq-786-sheikh"
-  prefix = "tarioqsh"
-  tags = "bucket"
-}
+module "s3_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
 
-resource "aws_s3_bucket_website_configuration" "s3_bucket" {
-  bucket = aws_s3_bucket.s3_bucket.id
+  bucket = "my-s3-bucket"
+  acl    = "private"
+  prefix = "tariqsheikh"
 
-  index_document {
-    suffix = "index.html"
+  versioning = {
+    enabled = true
   }
 
-  error_document {
-    key = "error.html"
-  }
-}
-
-resource "aws_s3_bucket_acl" "s3_bucket" {
-  bucket = aws_s3_bucket.s3_bucket.id
-
-  acl = "public-read"
-}
-
-resource "aws_s3_bucket_policy" "s3_bucket" {
-  bucket = aws_s3_bucket.s3_bucket.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "PublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource = [
-          aws_s3_bucket.s3_bucket.arn,
-          "${aws_s3_bucket.s3_bucket.arn}/*",
-        ]
-      },
-    ]
-  })
 }
